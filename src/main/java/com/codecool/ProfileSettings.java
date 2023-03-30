@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ProfileSettings extends BasePage{
 
@@ -17,8 +18,6 @@ public class ProfileSettings extends BasePage{
     //TODO LOGIN
     private final String url = "https://www.youtube.com/";
 
-    private final By clickOnLoginYouTube = By.linkText("Bejelentkezés");
-    private final By clickRenderer = By.xpath("//ytd-button-renderer[@class='signin style-scope ytd-consent-bump-v2-lightbox']");
     private final By addEmail = By.xpath("//input[@type='email']");
     private final By clickONEmailButton = By.xpath("//button[@class=\"VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc LQeN7 qIypjc TrZEUc lw1w4b\"]");
 
@@ -30,13 +29,20 @@ public class ProfileSettings extends BasePage{
         driver.navigate().to(url);
     }
 
-    public void clickOnLogInYouTubePopUp()
+
+    public void logInToYouTube()
     {
-        driver.findElement(clickRenderer).click();
-    }
-    public void clickLogInYouTubeWithoutPopUp()
-    {
-        driver.findElement(clickOnLoginYouTube).click();
+        try {
+            WebElement signInButton = driver.findElement(By.xpath("//ytd-button-renderer[@class='signin style-scope ytd-consent-bump-v2-lightbox']"));
+            if (signInButton.isDisplayed()) {
+                signInButton.click();
+            }
+        } catch (NoSuchElementException e) {
+            WebElement logInButton = driver.findElement(By.xpath("(//div/ytd-button-renderer[@class=\"style-scope ytd-masthead\"])[2]"));
+            if (logInButton.isDisplayed()) {
+                logInButton.click();
+            }
+        }
     }
 
     public void addEmail(String email)
@@ -83,10 +89,6 @@ public class ProfileSettings extends BasePage{
 
     private final By toggle = By.xpath("//tp-yt-paper-toggle-button[@role='button']");
 
-    public void testClick()
-    {
-        driver.findElement(By.xpath("(//tp-yt-paper-toggle-button[@role='button'])[6]"));
-    }
 
     public void clickToggle() throws InterruptedException {
         List<WebElement> toggleButtons = driver.findElements(toggle);
@@ -110,8 +112,7 @@ public class ProfileSettings extends BasePage{
             if (checked != null /*&& checked.equals("true")*/){
                     button.click();
                     Thread.sleep(300);}
-            /*button.click();
-            Thread.sleep(300);*/
+
         }
     }
 

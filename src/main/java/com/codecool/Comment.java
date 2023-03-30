@@ -52,12 +52,23 @@ public class Comment extends ProfileSettings {
         driver.findElement(commentSubmitButton).click();
     }
 
-    public void likeComment(){
+    public boolean likeComment(){
+        if (driver.findElement(commentLikeButton).isDisplayed()){
         driver.findElement(commentLikeButton).click();
+        return true;
+        } else {
+            return false;
+        }
+
     }
 
-    public void dislikeComment(){
-        driver.findElement(commentDislikeButton).click();
+    public boolean dislikeComment(){
+        if (driver.findElement(commentDislikeButton).isDisplayed()){
+            driver.findElement(commentDislikeButton).click();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void deleteComment(){
