@@ -44,8 +44,8 @@ public class SearchTest {
         search.navigate();
         search.searchVideoWithWrittenSearchCriteria(searchText);
 
-        String expectedResult = searchText;
-        String actualResult = "";       //TODO
+        String expectedResult = "https://www.youtube.com/results?search_query=linz";
+        String actualResult = driver.getCurrentUrl();
         Assertions.assertEquals(expectedResult, actualResult);
     }
 

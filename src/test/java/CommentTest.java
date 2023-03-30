@@ -1,4 +1,5 @@
 import com.codecool.Comment;
+import com.codecool.ProfileSettings;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -8,6 +9,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -37,6 +41,24 @@ public class CommentTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
+
+    @Test
+    public void testLogIn() throws InterruptedException {
+        ProfileSettings profileSettings = new ProfileSettings(driver);
+        profileSettings.navigate();
+
+        profileSettings.logInToYouTube();
+
+        profileSettings.addEmail("automationtester00666@gmail.com");
+        profileSettings.clickONEmailButton();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//div[@id='password']//input[@data-initial-value='']"))));
+        profileSettings.addPassword("Fecske111!");
+        profileSettings.clickLogIn();
+        Thread.sleep(3000);
+
+    }
+
     @Test
     public void writeCommentTest(){
         Comment comment = new Comment(driver);
@@ -47,37 +69,55 @@ public class CommentTest {
     }
 
     @Test
-    public void editCommentTest(){
+    public void editCommentTest() throws InterruptedException {
+        testLogIn();
         Comment comment = new Comment(driver);
         comment.navigate();
+        Thread.sleep(2000);
+        comment.scrollDown();
+        Actions actions = new Actions(driver);
+        actions.moveToElement(driver.findElement(By.xpath("//*[@id='like-button'][1]"))).perform();
         comment.editComment(newComment);
 
         String expectedResult = commentText+newComment;
-        String actualResult = driver.findElement(comment.getAddedComment(newComment);
+        String actualResult = comment.getAddedComment("wowwow!!");
         Assertions.assertEquals(expectedResult, actualResult);
     }
 
     @Test
-    public void likeCommentTest(){
+    public void likeDislikeCommentTest() throws InterruptedException {
+        testLogIn();
+
         Comment comment = new Comment(driver);
         comment.navigate();
+        Thread.sleep(2000);
+        comment.scrollDown();
+
+
         comment.likeComment();
 
-        String expectedResult = "";     //TODO
-        String actualResult = "";       //TODO
-        Assertions.assertEquals(expectedResult, actualResult);
+        Assertions.assertTrue(comment.likeComment());
+        Thread.sleep(2000);
+
+        comment.dislikeComment();
+
+        Assertions.assertTrue(comment.dislikeComment());
     }
 
+    /*
     @Test
     public void dislikeCommentTest(){
         Comment comment = new Comment(driver);
         comment.navigate();
         comment.dislikeComment();
 
-        String expectedResult = "";     //TODO
-        String actualResult = "";       //TODO
-        Assertions.assertEquals(expectedResult, actualResult);
+        boolean expectedResult = ;     //TODO
+        boolean actualResult = ;       //TODO
+        Assertions.assertTrue(expectedResult, actualResult);
     }
+
+    */
+
 
     @Test
     public void deleteCommentTest(){
@@ -90,8 +130,11 @@ public class CommentTest {
         Assertions.assertEquals(expectedResult, actualResult);
     }
 
+    /*
     @AfterEach
     public void quitDriver(){
         driver.quit();
     }
+    */
+
 }

@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 public class PlayVideo extends BasePage{
 
     public PlayVideo(WebDriver driver)
@@ -18,7 +20,7 @@ public class PlayVideo extends BasePage{
     private final WebElement searchIcon = driver.findElement(By.id("search-icon-legacy"));
     public void searchVideo()
     {
-        WebDriverWait wait = new WebDriverWait(driver, 20);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(ExpectedConditions.visibilityOf(searchBar));
 
         Actions actions = new Actions(driver);
