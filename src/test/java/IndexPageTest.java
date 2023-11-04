@@ -1,10 +1,6 @@
-import com.codecool.Comment;
 import com.codecool.PlayVideo;
 import com.codecool.ProfileSettings;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +15,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
 
 public class IndexPageTest {
 
@@ -29,7 +23,9 @@ public class IndexPageTest {
     @BeforeEach
     public void init()
     {
-        WebDriverManager.chromedriver().setup();
+        //WebDriverManager.chromedriver().setup();
+        System.setProperty("webdriver.chrome.driver",  "chromedriver");
+
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("ignore-certificate-errors");
@@ -40,29 +36,58 @@ public class IndexPageTest {
         //options.addArguments("--headless");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("start-maximized");
+        options.addArguments("--remote-allow-origins=*");
+
+
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
-
 
     @Test
     public void testLogIn() throws InterruptedException {
         ProfileSettings profileSettings = new ProfileSettings(driver);
         profileSettings.navigate();
 
-        profileSettings.logInToYouTube();
+
+        /*WebElement signInButton = null;
+        try {
+            signInButton = driver.findElement(By.xpath("//ytd-button-renderer[@class='signin style-scope ytd-consent-bump-v2-lightbox']"));
+            if (signInButton.isDisplayed()) {
+                signInButton.click();
+            }
+        } catch (NoSuchElementException e) {
+            if(signInButton == null || !signInButton.isDisplayed()){
+            WebElement logInButton = driver.findElement(By.xpath("(//div/ytd-button-renderer[@class=\"style-scope ytd-masthead\"])[2]"));
+                if (logInButton.isDisplayed()) {
+                    logInButton.click();
+                }
+            }
+        }*/
+
+        WebDriverWait wait2 = new WebDriverWait(driver, Duration.ofSeconds(10));
+        if(wait2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//ytd-button-renderer[@class='signin style-scope ytd-consent-bump-v2-lightbox']"))) != null){
+                WebElement logInButton = driver.findElement(By.xpath("//ytd-button-renderer[@class='signin style-scope ytd-consent-bump-v2-lightbox']"));
+                if (logInButton.isDisplayed()) {
+                logInButton.click();
+            }
+        }   else {
+            WebElement signInButton = driver.findElement(By.xpath("(//div/ytd-button-renderer[@class=\"style-scope ytd-masthead\"])[2]"));
+            if (signInButton.isDisplayed()) {
+                signInButton.click();
+
+            }
+
+        }
 
         profileSettings.addEmail("automationtester00666@gmail.com");
         profileSettings.clickONEmailButton();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//div[@id='password']//input[@data-initial-value='']"))));
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("(//div[@id='password'])"))));
         profileSettings.addPassword("Fecske111!");
         profileSettings.clickLogIn();
         Thread.sleep(3000);
 
     }
-
-    @Test
     public void testLogOut() throws InterruptedException {
         ProfileSettings profileSettings = new ProfileSettings(driver);
         profileSettings.clickProfileButton();
@@ -74,6 +99,7 @@ public class IndexPageTest {
 
         String urlExpected = "https://www.youtube.com/";
         Assertions.assertEquals(urlExpected, driver.getCurrentUrl());
+        driver.quit();
     }
     @Test
     public void testChangeSettings() throws InterruptedException {

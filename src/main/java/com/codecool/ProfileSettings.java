@@ -30,7 +30,7 @@ public class ProfileSettings extends BasePage{
     }
 
 
-    public void logInToYouTube()
+    /*public void logInToYouTube()
     {
         try {
             WebElement signInButton = driver.findElement(By.xpath("//ytd-button-renderer[@class='signin style-scope ytd-consent-bump-v2-lightbox']"));
@@ -43,7 +43,7 @@ public class ProfileSettings extends BasePage{
                 logInButton.click();
             }
         }
-    }
+    }*/
 
     public void addEmail(String email)
     {
